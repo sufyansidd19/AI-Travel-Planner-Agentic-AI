@@ -119,3 +119,40 @@ graph.add_node("flight_agent", flight_agent)
 graph.add_node("hotel_agent", hotel_agent)  
 graph.add_node("itinerary_agent", itinerary_agent)
 graph.add_node("final_agent", final_agent)
+
+graph.add_edge(START, "flight_agent")
+graph.add_edge("flight_agent", "hotel_agent")
+graph.add_edge("hotel_agent", "itinerary_agent")
+graph.add_edge("itinerary_agent", "final_agent")
+graph.add_edge("final_agent", END)
+
+_conn=psycopg.connect(DATABASE_URL)
+checkpointer=PostgresSaver(_conn)
+checkpointer.setup()
+
+app=graph.compile(checkpointer=checkpointer)
+
+if __name__=="__main__":
+    config={
+        "configurable": {
+            "thread_id": "user_sufyan"
+        }
+    }
+    
+    user_input=input("Enter your travel query: ")
+    
+    result=app.invoke({
+        "messages":[HumanMessage(content=user_input)],
+        "user_query": user_input,
+        "flight_results": "",
+        "hotel_results": "",
+        "itinerary": "",
+        "llm_calls": 0
+    },
+    config=config
+    )
+    print("\nFINAL RESPONSE:\n")
+    
+    for msg in result["messages"]:
+        print(msg.content)
+ 

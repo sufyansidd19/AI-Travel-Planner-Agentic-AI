@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY=os.getenv("AVIATION_API_KEY")
+API_KEY=os.getenv("AVIATION_STACK_API_KEY")
 
 
 def search_flights(query):

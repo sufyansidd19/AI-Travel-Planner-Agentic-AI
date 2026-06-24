@@ -5,6 +5,7 @@ import operator
 import psycopg
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.postgres import PostgresSaver
+from urllib.parse import quote_plus
 from langchain_core.messages import(
     AnyMessage,
     HumanMessage,
@@ -21,12 +22,14 @@ load_dotenv()
 
 llm=ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 
-DATABASE_URL=os.getenv("DATABASE_URL")
+PASS = quote_plus(os.getenv("POSTGRES_PASS"))
+PORT = os.getenv("POSTGRES_PORT", "5432")
+DATABASE_URL = f"postgresql://postgres:{PASS}@localhost:{PORT}/langraph_memory_demo"
 
 
 
 class TravelState(TypedDict):
-    message: Annotated[list[AnyMessage], operator.add]
+    messages: Annotated[list[AnyMessage], operator.add]
     user_query: str
     flight_results: str
     hotel_results: str
@@ -76,7 +79,7 @@ def itinerary_agent(state:TravelState):
             content="You are an expert travel assistant"
                 ), 
             HumanMessage(content=prompt)
-            ])
+            ]) 
     
     return{
         "itinerary":response.content,
@@ -126,9 +129,16 @@ graph.add_edge("hotel_agent", "itinerary_agent")
 graph.add_edge("itinerary_agent", "final_agent")
 graph.add_edge("final_agent", END)
 
-_conn=psycopg.connect(DATABASE_URL)
+
+
+# connection to postgres database 
+_conn = psycopg.connect(DATABASE_URL, autocommit=True)
 checkpointer=PostgresSaver(_conn)
 checkpointer.setup()
+
+
+
+
 
 app=graph.compile(checkpointer=checkpointer)
 

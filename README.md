@@ -111,13 +111,13 @@ python agent.py
 # 📸 Application Interface
 
 ### Main User Interface
-![Main UI](assets/AI-Travel4.jpg)
+![Main UI](images/AI-Travel4.jpg)
 
 ### Agent Orchestration & Response
-![Agent Response](assets/AI-Travel5.jpg)
+![Agent Response](images/AI-Travel5.jpg)
 
 ### Human-in-the-Loop (HITL) Workflow
-![Human Feedback Interface](assets/AI-Travel6.jpg)
+![Human Feedback Interface](images/AI-Travel6.jpg)
 
 ---
 

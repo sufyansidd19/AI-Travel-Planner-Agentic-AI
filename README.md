@@ -1,49 +1,32 @@
 # ✈️ AI Travel Planner (Agentic AI)
 
-An **LLM-powered Multi-Agent AI Travel Planner** built using **LangGraph**, **LangChain**, and **PostgreSQL** that generates personalized travel plans based on user preferences. The system leverages specialized AI agents to collaboratively search for flights, hotels, attractions, budgets and destination insights using real-time APIs.
+An **LLM-powered Multi-Agent AI Travel Planner** built using **LangGraph**, **LangChain**, **Model Context Protocol (MCP)**, and **PostgreSQL**. The system features a centralized **Supervisor Agent** that dynamically routes user queries across specialized AI agents, integrates input guardrails, supports Human-in-the-Loop (HITL) feedback, and interacts with real-time APIs for comprehensive travel orchestration.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features & Architectural Highlights
 
-- 🤖 Multi-Agent architecture using **LangGraph**
-- ✈️ Real-time flight search using **AviationStack API**
-- 🔎 Live web search using **Tavily Search API**
-- 🏨 Hotel and attraction recommendations
-- 💰 Budget-aware travel planning
-- 🗺️ Personalized day-by-day travel itineraries
-- 🧠 LLM-powered reasoning with **Groq**
-- 🗄️ PostgreSQL-backed state management
-- ⚡ Parallel agent execution for faster planning
+- 🧠 **Supervisor Agent Pattern:** Dynamic agent routing and execution management built on **LangGraph**.
+- 🛠️ **Model Context Protocol (MCP):** Standardized tools and MCP client integration for robust tool-calling.
+- 👨‍💻 **Human-in-the-Loop (HITL):** Breakpoints for human approval and feedback before finalizing travel itineraries.
+- 🛡️ **Input Guardrails:** Validation layers preventing out-of-bounds, unsafe, or malformed queries from entering the agent graph.
+- 🌤️ **Real-Time Weather Data:** Weather forecasts integrated via **OpenWeather API**.
+- ✈️ **Flight Search Integration:** Real-time flight tracking and pricing via **AviationStack API**.
+- 🔎 **Live Web Intelligence:** Deep web retrieval using **Tavily Search API**.
+- 💾 **Long-Term Memory & State Management:** Persistent multi-turn conversation and state checkpointing via **PostgreSQL**.
+- 💰 **Budget & Itinerary Optimization:** Multi-agent collaboration balancing accommodation, weather, flights, and activities.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- Python
-- LangGraph
-- LangChain
-- Groq LLM
-- PostgreSQL
-- AviationStack API
-- Tavily Search API
-- Streamlit
-
----
-
-# 📂 Project Structure
-
-```
-AI_TRAVEL_AGENT/
-│── images/
-│── travel_plans/
-│── tools/
-│── frontend.py
-│── main.py
-│── UI.py
-│── README.md
-│── .env
-```
+- **Language:** Python
+- **Orchestration:** LangGraph, LangChain
+- **LLM Engine:** Groq LLM
+- **Protocol & Integration:** Model Context Protocol (MCP)
+- **Database / Memory:** PostgreSQL
+- **APIs:** OpenWeather API, AviationStack API, Tavily Search API
+- **Frontend UI:** Streamlit
 
 ---
 
@@ -53,7 +36,6 @@ AI_TRAVEL_AGENT/
 
 ```bash
 git clone https://github.com/sufyansidd19/AI-Travel-Planner-Agentic-AI.git
-
 cd AI-Travel-Planner-Agentic-AI
 ```
 
@@ -65,7 +47,6 @@ cd AI-Travel-Planner-Agentic-AI
 
 ```bash
 python -m venv venv
-
 venv\Scripts\activate
 ```
 
@@ -73,7 +54,6 @@ venv\Scripts\activate
 
 ```bash
 python3 -m venv venv
-
 source venv/bin/activate
 ```
 
@@ -87,126 +67,78 @@ pip install -r requirements.txt
 
 ---
 
-# 🔑 API Keys
+# 🔑 API Keys Setup
 
-Create a **`.env`** file in the project root and add the following:
+Create a **`.env`** file in the root directory and configure the environment variables:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
 TAVILY_API_KEY=your_tavily_api_key
 AVIATIONSTACK_API_KEY=your_aviationstack_api_key
+OPENWEATHER_API_KEY=your_openweather_api_key
+POSTGRES_DB_URI=postgresql://user:password@localhost:5432/travel_planner
 ```
 
 ---
 
-# 📌 How to Get API Keys
+# 📌 Obtaining API Keys
 
-## 1️⃣ Groq API Key
-
-1. Visit **https://console.groq.com/keys**
-2. Sign in with your account.
-3. Click **Create API Key**.
-4. Copy the generated key.
-5. Paste it into your `.env` file.
-
-Example:
-
-```env
-GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxx
-```
+| Service | Setup Link | Description |
+| :--- | :--- | :--- |
+| **Groq API** | [consolegroq.com](https://console.groq.com/keys) | Ultra-fast LLM inference engine |
+| **Tavily Search** | [app.tavily.com](https://app.tavily.com/) | Real-time web search for agents |
+| **AviationStack** | [aviationstack.com](https://aviationstack.com/) | Live flight status and routes |
+| **OpenWeather** | [home.openweathermap.org](https://home.openweathermap.org/users/sign_up) | Real-time weather and forecasts |
 
 ---
 
-## 2️⃣ Tavily API Key
+# ▶️ Running the Application
 
-1. Visit **https://app.tavily.com/**
-2. Create an account or log in.
-3. Open the Dashboard.
-4. Generate an API Key.
-5. Copy the key into your `.env`.
-
-Example:
-
-```env
-TAVILY_API_KEY=tvly-xxxxxxxxxxxxxxxx
-```
-
----
-
-## 3️⃣ AviationStack API Key
-
-1. Visit **https://aviationstack.com/**
-2. Create a free account.
-3. Navigate to your Dashboard.
-4. Copy your API Access Key.
-5. Add it to your `.env` file.
-
-Example:
-
-```env
-AVIATIONSTACK_API_KEY=xxxxxxxxxxxxxxxxxxxx
-```
-
----
-
-# ▶️ Run the Application
+### Launch Streamlit Frontend
 
 ```bash
-python main.py
+streamlit run frontend.py
 ```
 
-or if using the UI
+### Run Agent Workflows Directly
 
 ```bash
-streamlit run UI.py
+python agent.py
 ```
 
 ---
 
-# 📸 Application Screenshots
+# 📸 Application Interface
 
-## Home Page
+### Main User Interface
+![Main UI](assets/AI-Travel4.jpg)
 
-![Home](images/AI-Travel.png)
+### Agent Orchestration & Response
+![Agent Response](assets/AI-Travel5.jpg)
 
----
-
-## Travel Planning
-
-![Travel Planning](images/AI-Travel2.png)
-
----
-
-## Generated Travel Plan
-
-![Generated Plan](images/AI-Travel3.png)
+### Human-in-the-Loop (HITL) Workflow
+![Human Feedback Interface](assets/AI-Travel6.jpg)
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome! Follow these steps to contribute:
 
-1. Fork the repository
-2. Create a new feature branch
-
-```bash
-git checkout -b feature-name
-```
-
-3. Commit your changes
-
-```bash
-git commit -m "Add new feature"
-```
-
-4. Push the branch
-
-```bash
-git push origin feature-name
-```
-
-5. Open a Pull Request
+1. Fork the repository.
+2. Create your feature branch:
+   ```bash
+   git checkout -b feature/agent-enhancement
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add custom supervisor routing node"
+   ```
+4. Push to the branch:
+   ```bash
+   git push origin feature/agent-enhancement
+   ```
+5. Open a **Pull Request**.
 
 ---
 
@@ -218,6 +150,8 @@ This project is licensed under the **MIT License**.
 
 ## 👨‍💻 Author
 
-**Sufyan Siddiqui**
+**Sufyan Siddiqui**  
+*Machine Learning Engineer & Agentic AI Specialist*
 
-If you found this project helpful, consider giving it a ⭐ on GitHub!
+If you found this project helpful, please consider giving it a ⭐ on [GitHub](https://github.com/sufyansidd19/AI-Travel-Planner-Agentic-AI)!
+
